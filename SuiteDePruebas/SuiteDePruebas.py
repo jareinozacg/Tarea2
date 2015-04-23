@@ -1,4 +1,4 @@
-''' Suite de casos de prueba para la funcion calculaPrecio
+''' Suite de casos de prueba para la funcion calculaPrecio.
 creado el 21/04/2015
 Equipo: PyTech
 Autores: 
