@@ -32,6 +32,46 @@ class Test(unittest.TestCase):
         tarif = Tarifa(0, 1)
         tiempo = [datetime(2015, 4, 21, 22, 0), datetime(2015, 4, 22, 23, 0)]
         self.assertEqual(calcularPrecio(tarif, tiempo), 0)
+        
+    # Prueba del minimo tiempo que se puede reservar en dia de semana   
+    def testTiempoMinimo(self):
+        tarif = Tarifa(1.50, 5)
+        tiempo = [datetime(2015, 4, 22, 9, 0), datetime(2015, 4, 22, 9, 15)]
+        self.assertEqual(calcularPrecio(tarif, tiempo), 1.50)
+    
+    # Prueba de funcionalidad basica para los dias de fin de semana 
+    def testTarifaEnRangoDiaFinSemana(self):
+        tarif = Tarifa(1, 3)
+        tiempo = (datetime(2015, 4, 25, 9, 30), datetime(2015, 4, 25, 10, 30))
+        self.assertEqual(calcularPrecio(tarif,tiempo), 3.00) 
+
+    # Prueba de redondeo de la tarifa durante dias de fin de semana
+    # prueba si se cobra la fraccion como una hora completa
+    def testTarifaRedondeoFinSemana(self):
+        tarif = Tarifa(1, 2)
+        tiempo = (datetime(2015, 4, 25, 9, 0), datetime(2015, 4, 25, 10, 1))
+        self.assertEqual(calcularPrecio(tarif, tiempo), 4.00)
+        
+    # Prueba para la tarifa minima: 0 bs con 1 centimo.
+    # tarifa no entera
+    def testTarifaMinimaFrontera(self):
+        tarif = Tarifa(1, 0.1)
+        tiempo = (datetime(2015, 4, 25, 13, 0), datetime(2015, 4, 25, 13, 15))
+        self.assertEqual(calcularPrecio(tarif, tiempo), 0.10)
+    
+    '''Datos no permitidos'''
+        
+    # Prueba del mayor de los menores tiempos invalidos en dia de semana
+    def testTiempoInvalidoMenor(self):
+        tarif = Tarifa(1, 0)
+        tiempo = [datetime(2015, 4, 21, 10, 0), datetime(2015, 4, 21, 10, 14)]
+        self.assertRaises(Exception, calcularPrecio, tarif, tiempo)
+    
+    # Prueba del menor de los mayores tiempos invalidos
+    def testTiempoInvalidoMayor(self):
+        tarif = Tarifa(2, 3)
+        tiempo = [datetime(2015, 4, 21, 10, 0), datetime(2015, 4, 28, 10, 1)]
+        self.assertRaises(Exception, calcularPrecio, tarif, tiempo)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
